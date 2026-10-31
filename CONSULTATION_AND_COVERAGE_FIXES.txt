@@ -1,0 +1,46 @@
+LEX - CONSULTATION AND COVERAGE FIXES
+
+What changed
+------------
+1. backend/legal_service.py
+   - A legal case no longer becomes unsupported only because the database
+     has no source-link row. Existing case guidance, actions and document
+     checklists remain available, with a clear verification caveat.
+   - Banking clarification questions are limited to UPI/bank/phishing cases;
+     cyber-extortion cases are not asked unrelated banking questions.
+   - Clear threats to publish private images in exchange for money can be
+     recognized without unnecessary clarification.
+
+2. backend/keyword_enhancements.py
+   - Adds 140 everyday-language aliases to 20 existing legal cases.
+   - Runs idempotently on first legal database retrieval, for either MySQL
+     or the SQLite fallback. It does not overwrite existing data.
+
+3. backend/legal_keyword_enhancements.sql
+   - Optional MySQL/phpMyAdmin migration containing the same aliases.
+   - The Python startup migration normally applies these automatically.
+
+4. backend/database.py
+   - MySQL connector is optional. If it is not installed or MySQL is offline,
+     the existing SQLite fallback can still be used.
+
+5. frontend/chatpage.html
+   - Normalizes action/remedy/prevention records before rendering the formal
+     Case Brief and history viewer. This prevents literal [object Object]
+     text in the generated document.
+
+Important limitations
+---------------------
+Lex is still a database-backed Indian legal information assistant, not a
+trained general-purpose legal model. It covers the cases and topics stored
+in its database; it cannot guarantee an answer for every possible legal
+question. Cases without source links are labelled with a verification caveat.
+Review statutory provisions and current procedures against official sources
+or a qualified Indian lawyer before relying on them.
+
+Database behavior
+-----------------
+The SQLite database file is backend/lex_db.sqlite. When MySQL is available,
+Lex uses the configured MySQL database first and applies the aliases there
+as well. The SQL migration can also be imported manually into phpMyAdmin if
+needed. Do not replace your existing database with a blank one.

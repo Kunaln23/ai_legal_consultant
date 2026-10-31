@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lex | Sign In & Access Legal Consultation</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="logo" title="Back to Home">
+                <span class="logo-seal">⚖</span>
+                <span class="logo-text">LEX</span>
+            </a>
+            <span class="logo-sub">Legal Counsel Portal</span>
+        </div>
+        <div class="nav-right">
+            <a href="index.html" class="back-home-link">← Return to Home</a>
+        </div>
+    </header>
+
+    <!-- ================= LOGIN AREA ================= -->
+    <main class="login-page">
+
+        <section class="login-container">
+
+            <!-- Close Button -->
+            <button
+                class="close-btn"
+                type="button"
+                aria-label="Back to home"
+                title="Back to home"
+                onclick="window.location.href='index.html'"
+            >
+                ✕
+            </button>
+
+            <!-- Badge -->
+            <div class="consultation-badge">
+                <span>⚖</span> Confidential Client Access
+            </div>
+
+            <!-- Heading -->
+            <h1 class="login-title">
+                Sign in to Lex Case Desk
+            </h1>
+
+            <p class="login-subtitle">
+                Access your legal consultations, personalized Indian statutory guidance, and full case documents.
+            </p>
+
+            <!-- Notification Alert -->
+            <div id="loginAlert" class="alert-message" style="display: none;"></div>
+
+            <!-- LOGIN FORM -->
+            <form class="login-form" id="loginForm">
+
+                <!-- First + Last Name -->
+                <div class="name-row">
+                    <div class="input-group">
+                        <label for="first-name">First name</label>
+                        <input
+                            type="text"
+                            id="first-name"
+                            name="first-name"
+                            placeholder="e.g. Kunal"
+                            autocomplete="given-name"
+                            required
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label for="last-name">Last name</label>
+                        <input
+                            type="text"
+                            id="last-name"
+                            name="last-name"
+                            placeholder="e.g. Sharma"
+                            autocomplete="family-name"
+                        >
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="input-group">
+                    <label for="email">Email address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="client@example.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <!-- Password -->
+                <div class="input-group password-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your confidential password"
+                            autocomplete="current-password"
+                            required
+                        >
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="passwordToggleBtn"
+                            onclick="togglePassword()"
+                            aria-label="Toggle password visibility"
+                            title="Show/Hide password"
+                        >
+                            👁
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Continue Button -->
+                <button
+                    type="submit"
+                    class="continue-btn"
+                    id="submitBtn"
+                >
+                    <span id="btnText">Access Case Desk →</span>
+                    <div id="btnSpinner" class="spinner" style="display: none;"></div>
+                </button>
+
+            </form>
+
+            <div class="quick-demo-link">
+                <span>Quick demo credentials:</span>
+                <button type="button" onclick="fillDemoUser()">Fill Demo Client</button>
+            </div>
+
+            <!-- TERMS -->
+            <p class="terms">
+                Lex provides automated general statutory information under Indian Law for informational guidance.
+            </p>
+
+        </section>
+
+    </main>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        const API_BASE = "http://127.0.0.1:5000";
+
+        function togglePassword() {
+            const pwd = document.getElementById("password");
+            const btn = document.getElementById("passwordToggleBtn");
+            if (pwd.type === "password") {
+                pwd.type = "text";
+                btn.textContent = "🔒";
+            } else {
+                pwd.type = "password";
+                btn.textContent = "👁";
+            }
+        }
+
+        function fillDemoUser() {
+            document.getElementById("first-name").value = "Kunal";
+            document.getElementById("last-name").value = "Sharma";
+            document.getElementById("email").value = "kunal@lex.local";
+            document.getElementById("password").value = "lex12345";
+        }
+
+        const loginForm = document.getElementById("loginForm");
+        const submitBtn = document.getElementById("submitBtn");
+        const btnText = document.getElementById("btnText");
+        const btnSpinner = document.getElementById("btnSpinner");
+        const loginAlert = document.getElementById("loginAlert");
+
+        function showAlert(msg, isSuccess = false) {
+            loginAlert.textContent = msg;
+            loginAlert.className = `alert-message ${isSuccess ? 'alert-success' : 'alert-error'}`;
+            loginAlert.style.display = "block";
+        }
+
+        loginForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const firstName = document.getElementById("first-name").value.trim();
+            const lastName = document.getElementById("last-name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            if (!firstName || !email || !password) {
+                showAlert("Please complete all required fields.");
+                return;
+            }
+
+            btnText.style.display = "none";
+            btnSpinner.style.display = "inline-block";
+            submitBtn.disabled = true;
+
+            const fullName = `${firstName} ${lastName}`.trim();
+            const sessionId = "LEX-SESS-" + Math.floor(Date.now() / 1000) + "-" + Math.floor(100 + Math.random() * 900);
+
+            const userData = {
+                name: fullName,
+                first_name: firstName,
+                last_name: lastName,
+                email: email,
+                session_id: sessionId
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        first_name: firstName,
+                        last_name: lastName,
+                        email: email,
+                        password: password
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.user) {
+                        userData.name = data.user.name;
+                        if (data.session_id) userData.session_id = data.session_id;
+                    }
+                }
+            } catch (err) {
+                console.log("Local session fallback active");
+            }
+
+            localStorage.setItem("lex_user", JSON.stringify(userData));
+            sessionStorage.setItem("lex_active_session", userData.session_id);
+
+            showAlert(`Welcome, ${firstName}! Opening your consultation workspace...`, true);
+
+            setTimeout(() => {
+                window.location.href = "chatpage.html";
+            }, 500);
+        });
+    </script>
+
+</body>
+</html>

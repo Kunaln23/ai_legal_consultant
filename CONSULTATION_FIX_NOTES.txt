@@ -1,0 +1,21 @@
+LEX CONSULTATION IMPROVEMENTS
+
+Updated files:
+- backend/app.py
+- backend/legal_service.py
+
+What changed:
+1. The consultation now tracks how many clarification questions have already been shown.
+2. Lex can ask a maximum of four follow-up questions in total for one consultation (not four questions per turn).
+3. Before displaying a question, Lex checks the full consultation text and suppresses questions when the relevant information is already present. Checks cover roles/parties, dates and durations, amounts, employment status, product/service details, actions taken, incident description, and the user's goal.
+4. Duplicate clarification questions are removed and the displayed action list is kept in sync with the question list.
+5. If no unanswered clarification remains, or the four-question budget is exhausted while the case is still uncertain, Lex stops asking and clearly says it cannot confirm a specific case rather than guessing.
+6. The question count is stored with the consultation response so it continues across follow-up messages and database-loaded pending consultations.
+7. Case matching during a follow-up now prioritizes the full consultation history. The latest short reply is used only as a fallback if the full context finds no candidates, preventing a word such as "UPI" or "three months" from overriding the actual problem context.
+
+Existing legal database retrieval, case matching, response structure, frontend pages, and visual design are retained.
+
+Validation:
+- Python syntax compilation passed for backend/app.py and backend/legal_service.py.
+- Legal-service smoke checks returned relevant database-backed answers for unpaid salary, UPI fraud, and an unreturned rental security deposit.
+- 26 isolated backend regression tests passed. Two Flask route tests could not run in this environment because Flask is not installed here. Install backend/requirement.txt in the project's Python environment before running the app.

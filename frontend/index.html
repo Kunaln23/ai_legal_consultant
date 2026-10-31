@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lex | AI Legal Consultant & Case Desk</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="navbar">
+
+        <div class="logo-group">
+            <a href="index.html" class="logo">
+                <span class="logo-seal">⚖</span>
+                <span class="logo-text">LEX</span>
+            </a>
+            <span class="logo-badge">Legal Counsel</span>
+        </div>
+
+        <nav class="nav-links">
+            <a href="index.html" class="nav-item active-nav">Home</a>
+            <a href="chatpage.html" class="nav-item">Case Desk</a>
+            <a href="chatpage.html" class="nav-item">Legal Topics</a>
+        </nav>
+
+        <div class="nav-buttons" id="navAuthArea">
+            <button class="login-btn" onclick="window.location.href='login.html'">
+                Sign In
+            </button>
+            <button class="consult-btn" onclick="handleStartConsultation()">
+                Open Case Desk →
+            </button>
+        </div>
+
+    </header>
+
+
+    <!-- ================= MAIN HERO ================= -->
+    <main class="landing-main">
+
+        <section class="hero-section">
+
+            <div class="hero-header-badge">
+                <span>⚖</span> Indian Legal Intelligence & Case Desk
+            </div>
+
+            <h1 class="hero-headline">
+                Legal Clarity & Statutory Action Plans For Your Situation
+            </h1>
+
+            <p class="hero-description">
+                Describe your legal dispute or problem in simple words. Lex analyzes Indian statutory laws,
+                evaluates your rights, prepares a step-by-step action roadmap, outlines vital preventions,
+                and generates complete legal case brief documents.
+            </p>
+
+            <div class="hero-cta-group">
+                <button class="hero-primary-btn" onclick="handleStartConsultation()">
+                    Start Legal Consultation →
+                </button>
+                <button class="hero-secondary-btn" onclick="window.location.href='login.html'">
+                    Sign In / Access Sessions
+                </button>
+            </div>
+
+            <!-- Features Row -->
+            <div class="features-bar">
+                <div class="feature-item">
+                    <span class="feature-bullet">■</span>
+                    <div>
+                        <strong>Plain English Advice</strong>
+                        <span>Simple words anyone can understand</span>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <span class="feature-bullet">■</span>
+                    <div>
+                        <strong>Indian Statutory Laws</strong>
+                        <span>BNS, BNSS, Consumer Act, IT Act, Labour</span>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <span class="feature-bullet">■</span>
+                    <div>
+                        <strong>Case Document Export</strong>
+                        <span>Printable case briefs & document checklists</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ================= COMMON LEGAL TOPICS SECTION ================= -->
+        <section class="topics-section">
+            <div class="section-title-wrap">
+                <span class="section-kicker">Immediate Case Scenarios</span>
+                <h2>Frequently Consulted Legal Matters</h2>
+            </div>
+
+            <div class="topics-cards-grid">
+
+                <div class="topic-action-card" onclick="consultTopic('My employer has not paid my salary for two months')">
+                    <h3>Unpaid Salary Dispute</h3>
+                    <p>Wages withheld, delayed compensation, and Labour Commissioner complaint steps.</p>
+                    <span class="card-action-link">Consult Scenario →</span>
+                </div>
+
+                <div class="topic-action-card" onclick="consultTopic('My landlord refuses to return my security deposit after vacating')">
+                    <h3>Rental Security Deposit</h3>
+                    <p>Deposit withholding, unlawful deductions, and tenancy notice recovery.</p>
+                    <span class="card-action-link">Consult Scenario →</span>
+                </div>
+
+                <div class="topic-action-card" onclick="consultTopic('Someone scammed me online through a payment fraud transaction')">
+                    <h3>Cyber & UPI Fraud</h3>
+                    <p>Online financial scams, account freezing, and 1930 Cyber Cell reporting.</p>
+                    <span class="card-action-link">Consult Scenario →</span>
+                </div>
+
+                <div class="topic-action-card" onclick="consultTopic('I received a defective product and the seller refuses refund')">
+                    <h3>Consumer Rights & Refunds</h3>
+                    <p>Defective goods, e-commerce warranty denial, and Consumer Forum filing.</p>
+                    <span class="card-action-link">Consult Scenario →</span>
+                </div>
+
+                <div class="topic-action-card" onclick="consultTopic('I was in a motor vehicle accident and need guidance on FIR and MACT')">
+                    <h3>Motor Accidents & MACT</h3>
+                    <p>Accident injury compensation, police FIR, and insurance claim settlement.</p>
+                    <span class="card-action-link">Consult Scenario →</span>
+                </div>
+
+                <div class="topic-action-card" onclick="consultTopic('A friend beat me and physically assaulted me')">
+                    <h3>Assault & Police FIR</h3>
+                    <p>Hospital MLC certificate, BNS/IPC assault provisions, and FIR registration.</p>
+                    <span class="card-action-link">Consult Scenario →</span>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="index-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <span class="footer-logo">⚖ LEX</span>
+                <p>AI Legal Consultant for Indian Statutory Law & Case Document Preparation.</p>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="chatpage.html">Case Desk</a>
+                <a href="login.html">Sign In</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Lex AI Legal Consultant. Lex provides automated statutory information under Indian law for informational guidance.</p>
+        </div>
+    </footer>
+
+
+    <!-- ================= SCRIPTS ================= -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const userJson = localStorage.getItem("lex_user");
+            const navAuthArea = document.getElementById("navAuthArea");
+
+            if (userJson) {
+                try {
+                    const user = JSON.parse(userJson);
+                    const userName = user.name || user.first_name || "User";
+                    navAuthArea.innerHTML = `
+                        <div class="user-greeting-pill">
+                            <span class="user-name-tag">Hello, <strong>${escapeHtml(userName)}</strong></span>
+                            <button class="consult-btn" onclick="window.location.href='chatpage.html'">
+                                Open Case Desk →
+                            </button>
+                            <button class="signout-link" onclick="logoutUser()">
+                                Sign Out
+                            </button>
+                        </div>
+                    `;
+                } catch (e) {}
+            }
+        });
+
+        function handleStartConsultation() {
+            window.location.href = "chatpage.html";
+        }
+
+        function consultTopic(query) {
+            sessionStorage.setItem("lex_initial_query", query);
+            window.location.href = "chatpage.html";
+        }
+
+        function logoutUser() {
+            localStorage.removeItem("lex_user");
+            window.location.reload();
+        }
+
+        function escapeHtml(str) {
+            return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
+
+</body>
+</html>

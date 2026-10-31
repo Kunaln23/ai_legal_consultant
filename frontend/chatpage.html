@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lex | AI Legal Consultant & Case Desk</title>
+    <link rel="stylesheet" href="chatpage.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ================= TOP COUNSEL BAR ================= -->
+    <header class="counsel-bar">
+
+        <div class="counsel-bar-left">
+            <button class="drawer-toggle-btn" id="drawerToggleBtn" aria-label="Toggle history panel" title="Toggle History Panel">
+                ☰
+            </button>
+            <a href="index.html" class="brand-link" title="Lex Home">
+                <span class="brand-seal">⚖</span>
+                <span class="brand-title">LEX</span>
+                <span class="brand-subtitle">Legal Counsel</span>
+            </a>
+            <div class="session-badge" id="activeSessionBadge" title="Active Session ID">
+                <span class="session-dot"></span>
+                <span class="session-text" id="sessionBadgeText">Session: Initializing...</span>
+            </div>
+        </div>
+
+        <nav class="counsel-bar-center">
+            <button class="nav-tab active-tab" id="workbenchTabBtn" onclick="focusActiveChat()">Case Desk</button>
+            <button class="nav-tab" id="historyNavBtn" onclick="openHistoryDrawer()">History</button>
+            <button class="nav-tab" id="topicsNavBtn" onclick="openTopicsModal()">Legal Topics</button>
+        </nav>
+
+        <div class="counsel-bar-right">
+            <button class="quick-new-btn" onclick="startNewSession()" title="Start a fresh consultation session">
+                <span>+</span> New Consultation
+            </button>
+
+            <!-- Profile Trigger Button -->
+            <div class="profile-pill" id="profilePill" onclick="openProfileModal()" title="View User Profile & Sessions">
+                <div class="profile-avatar-seal" id="profileAvatarSeal">U</div>
+                <div class="profile-meta">
+                    <span class="profile-name" id="topProfileName">User</span>
+                    <span class="profile-role">Client Portal</span>
+                </div>
+            </div>
+        </div>
+
+    </header>
+
+
+    <!-- ================= MAIN WORKBENCH LAYOUT ================= -->
+    <main class="workbench-layout">
+
+        <!-- Mobile Drawer Backdrop -->
+        <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeHistoryDrawer()"></div>
+
+        <!-- ================= LEFT HISTORY & SESSION DOCK ================= -->
+        <aside class="case-dock" id="caseDock">
+
+            <div class="dock-header">
+                <div class="dock-title-row">
+                    <h3>History</h3>
+                    <button class="dock-clear-btn" onclick="clearAllHistory()" title="Clear consultation history">Clear</button>
+                </div>
+                <p class="dock-caption">Past consultations for quick reference</p>
+            </div>
+
+            <!-- HISTORY LIST -->
+            <div class="history-scroll-area" id="historyListContainer">
+                <!-- Dynamically filled -->
+            </div>
+
+            <!-- SESSION STATUS CARD -->
+            <div class="session-info-card">
+                <div class="session-info-header">
+                    <span class="session-label">Current Session</span>
+                    <span class="session-status-tag">Active</span>
+                </div>
+                <div class="session-id-display" id="dockSessionId">LEX-SESS-0000</div>
+                <button class="session-switch-btn" onclick="startNewSession()">
+                    Start Fresh Session ↻
+                </button>
+            </div>
+
+        </aside>
+
+
+        <!-- ================= CENTER CASE DESK WORKBENCH ================= -->
+        <section class="case-desk">
+
+            <!-- MESSAGES / CONSULTATION STREAM -->
+            <div class="desk-content" id="deskContent">
+
+                <!-- INTAKE WELCOME VIEW -->
+                <div class="intake-welcome" id="intakeWelcome">
+
+                    <div class="intake-hero-card">
+                        <div class="intake-emblem">⚖</div>
+                        <h2>Indian Legal Consultation Desk</h2>
+                        <p class="intake-lead">
+                            Describe your dispute, incident, or legal concern in simple words. Lex assesses your situation under Indian Law,
+                            identifies your rights and applicable statutory sections, prepares a step-by-step action roadmap, provides essential preventions,
+                            and generates a complete case document.
+                        </p>
+                    </div>
+
+                    <!-- Streamlined Scenario Triggers -->
+                    <div class="intake-categories-grid">
+
+                        <button class="intake-card" onclick="submitPredefined('My employer has not paid my salary for two months and is withholding wages')">
+                            <div class="intake-card-content">
+                                <strong>Unpaid Salary & Wages</strong>
+                                <span>Employer delaying or withholding earned salary and dues</span>
+                            </div>
+                            <span class="intake-arrow">→</span>
+                        </button>
+
+                        <button class="intake-card" onclick="submitPredefined('My landlord refuses to return my rental security deposit after vacating the property')">
+                            <div class="intake-card-content">
+                                <strong>Tenancy Security Deposit</strong>
+                                <span>Landlord not refunding deposit or threatening eviction</span>
+                            </div>
+                            <span class="intake-arrow">→</span>
+                        </button>
+
+                        <button class="intake-card" onclick="submitPredefined('Someone scammed me online through a UPI payment and fraudulent transaction')">
+                            <div class="intake-card-content">
+                                <strong>Cyber & Payment Fraud</strong>
+                                <span>Money lost to unauthorized UPI transaction or online scam</span>
+                            </div>
+                            <span class="intake-arrow">→</span>
+                        </button>
+
+                        <button class="intake-card" onclick="submitPredefined('I bought a defective product online and the seller refuses replacement or refund')">
+                            <div class="intake-card-content">
+                                <strong>Defective Product / Refund</strong>
+                                <span>Seller or shopping portal refusing return, refund, or warranty</span>
+                            </div>
+                            <span class="intake-arrow">→</span>
+                        </button>
+
+                        <button class="intake-card" onclick="submitPredefined('I was involved in a road traffic accident and need guidance on police FIR and MACT claim')">
+                            <div class="intake-card-content">
+                                <strong>Motor Vehicle Accident</strong>
+                                <span>FIR registration, vehicle damage, and accident compensation</span>
+                            </div>
+                            <span class="intake-arrow">→</span>
+                        </button>
+
+                        <button class="intake-card" onclick="submitPredefined('A friend beat me and physically attacked me causing injury')">
+                            <div class="intake-card-content">
+                                <strong>Physical Assault & Injury</strong>
+                                <span>Assault, MLC medical certificate, and police FIR steps</span>
+                            </div>
+                            <span class="intake-arrow">→</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- CONSULTATION MESSAGES STREAM -->
+                <div class="consultation-stream" id="consultationStream"></div>
+
+                <!-- THINKING / ANALYSIS INDICATOR -->
+                <div class="analysis-indicator" id="analysisIndicator" style="display: none;">
+                    <div class="analysis-spinner"></div>
+                    <div class="analysis-text-block">
+                        <strong>Analyzing Situation under Indian Law</strong>
+                        <span>Reviewing statutory provisions, action steps, preventions, and document requirements...</span>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- ================= CASE INTAKE INPUT BAR ================= -->
+            <div class="intake-input-area">
+
+                <div class="intake-input-box">
+                    <textarea
+                        id="legalQueryInput"
+                        placeholder="Describe your legal situation in simple words (e.g., 'Landlord won\'t return deposit' or 'Employer not paying salary')..."
+                        rows="1"
+                    ></textarea>
+
+                    <button class="consult-submit-btn" id="consultSubmitBtn" onclick="handleSendQuery()" title="Submit situation for legal analysis (Enter)">
+                        Analyze Case
+                    </button>
+                </div>
+
+                <div class="intake-footer-note">
+                    Lex provides automated legal information based on Indian statutory frameworks for guidance. For court litigation, consult a licensed advocate.
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= MODAL: DEDICATED HISTORY VIEWER WINDOW ================= -->
+    <div class="modal-overlay" id="historyModalOverlay">
+        <div class="modal-window history-window">
+
+            <div class="modal-window-header">
+                <div class="modal-header-meta">
+                    <span class="modal-badge">History Record</span>
+                    <h3 id="historyModalTitle">Consultation Case Details</h3>
+                </div>
+                <button class="modal-close-icon" onclick="closeHistoryModal()" title="Close and return to active chat">✕</button>
+            </div>
+
+            <div class="modal-window-body" id="historyModalBody">
+                <!-- Loaded with full past consultation data -->
+            </div>
+
+            <div class="modal-window-footer">
+                <button class="modal-btn-secondary" onclick="closeHistoryModal()">
+                    Close & Return to Active Case Desk
+                </button>
+                <button class="modal-btn-primary" id="historyModalDocBtn" onclick="generateDocumentFromHistory()">
+                    Generate Full Case Document 📄
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= MODAL: FULL CASE DOCUMENT GENERATOR ================= -->
+    <div class="modal-overlay" id="documentModalOverlay">
+        <div class="modal-window document-window">
+
+            <div class="modal-window-header">
+                <div class="modal-header-meta">
+                    <span class="modal-badge">Official Case Brief</span>
+                    <h3>Legal Consultation & Action Document</h3>
+                </div>
+                <button class="modal-close-icon" onclick="closeDocumentModal()" title="Close Document">✕</button>
+            </div>
+
+            <div class="modal-window-body document-preview-body" id="documentModalBody">
+                <!-- Generated Printable Legal Case Document -->
+            </div>
+
+            <div class="modal-window-footer">
+                <button class="modal-btn-secondary" onclick="closeDocumentModal()">
+                    Close Document
+                </button>
+                <button class="modal-btn-outline" onclick="copyDocumentText()">
+                    Copy Text 📋
+                </button>
+                <button class="modal-btn-primary" onclick="printCaseDocument()">
+                    Print / Save PDF 🖨
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= MODAL: DEDICATED USER PROFILE & SESSIONS ================= -->
+    <div class="modal-overlay" id="profileModalOverlay">
+        <div class="modal-window profile-window">
+
+            <div class="modal-window-header">
+                <div class="modal-header-meta">
+                    <span class="modal-badge">Client Identity</span>
+                    <h3>User Profile & Sessions</h3>
+                </div>
+                <button class="modal-close-icon" onclick="closeProfileModal()" title="Close Profile">✕</button>
+            </div>
+
+            <div class="modal-window-body profile-body">
+
+                <!-- Profile Seal Card -->
+                <div class="profile-hero-card">
+                    <div class="profile-large-seal" id="profileModalSeal">U</div>
+                    <div class="profile-hero-details">
+                        <h4 id="profileModalName">User</h4>
+                        <span id="profileModalEmail">guest@lex.local</span>
+                        <div class="profile-jurisdiction-tag">Jurisdiction: India</div>
+                    </div>
+                </div>
+
+                <!-- Session Details Grid -->
+                <div class="profile-info-grid">
+                    <div class="profile-info-card">
+                        <span class="info-label">Active Session ID</span>
+                        <strong id="profileModalSessionId">LEX-SESS-XXXX</strong>
+                    </div>
+                    <div class="profile-info-card">
+                        <span class="info-label">Total History Records</span>
+                        <strong id="profileModalHistoryCount">0 Consultations</strong>
+                    </div>
+                    <div class="profile-info-card">
+                        <span class="info-label">Language Mode</span>
+                        <strong>Simple Plain English</strong>
+                    </div>
+                    <div class="profile-info-card">
+                        <span class="info-label">Legal Framework</span>
+                        <strong>Indian Statutes & Codes</strong>
+                    </div>
+                </div>
+
+                <!-- Profile Actions -->
+                <div class="profile-actions-list">
+                    <button class="profile-action-btn" onclick="startNewSession(); closeProfileModal();">
+                        <span>↻</span> Start Fresh Consultation Session
+                    </button>
+                    <button class="profile-action-btn" onclick="clearAllHistory(); closeProfileModal();">
+                        <span>🗑</span> Clear All Consultation History
+                    </button>
+                    <button class="profile-action-btn text-danger" onclick="logoutCurrentUser()">
+                        <span>🚪</span> Sign Out of Lex
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="modal-window-footer">
+                <button class="modal-btn-secondary" onclick="closeProfileModal()">
+                    Close Window
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= MODAL: LEGAL TOPICS DIRECTORY ================= -->
+    <div class="modal-overlay" id="topicsModalOverlay">
+        <div class="modal-window topics-window">
+
+            <div class="modal-window-header">
+                <div class="modal-header-meta">
+                    <span class="modal-badge">Indian Legal Framework</span>
+                    <h3>Legal Topics Directory</h3>
+                </div>
+                <button class="modal-close-icon" onclick="closeTopicsModal()" title="Close Topics">✕</button>
+            </div>
+
+            <div class="modal-window-body">
+                <p class="topics-intro">Select any legal category to explore standard situations, statutory remedies, and required documents under Indian Law:</p>
+                <div class="topics-directory-grid" id="topicsDirectoryGrid">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <div class="modal-window-footer">
+                <button class="modal-btn-secondary" onclick="closeTopicsModal()">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= SCRIPTS ================= -->
+    <script>
+        const API_BASE = "http://127.0.0.1:5000";
+
+        let currentUser = null;
+        let activeSessionId = null;
+        let historyRecords = [];
+        let activeConsultationData = null;
+        let activeConsultationId = null;
+        let selectedHistoryItem = null;
+
+        // Initialize on DOM ready
+        document.addEventListener("DOMContentLoaded", () => {
+            initUserSession();
+            setupInputListeners();
+            loadHistoryFromStorage();
+
+            // Check if user navigated with a question from home page
+            const initialQuery = sessionStorage.getItem("lex_initial_query");
+            if (initialQuery) {
+                sessionStorage.removeItem("lex_initial_query");
+                setTimeout(() => {
+                    submitLegalQuery(initialQuery);
+                }, 300);
+            }
+        });
+
+        // 1. Session & User Management
+        function initUserSession() {
+            // Load or generate session ID
+            let storedSession = sessionStorage.getItem("lex_active_session");
+            if (!storedSession) {
+                storedSession = "LEX-SESS-" + Math.floor(Date.now() / 1000) + "-" + Math.floor(100 + Math.random() * 900);
+                sessionStorage.setItem("lex_active_session", storedSession);
+            }
+            activeSessionId = storedSession;
+            activeConsultationId = null;
+
+            // Update session displays
+            document.getElementById("sessionBadgeText").textContent = `Session: ${activeSessionId}`;
+            document.getElementById("dockSessionId").textContent = activeSessionId;
+            document.getElementById("profileModalSessionId").textContent = activeSessionId;
+
+            // Load user data
+            const userJson = localStorage.getItem("lex_user");
+            if (userJson) {
+                try {
+                    currentUser = JSON.parse(userJson);
+                } catch (e) {
+                    currentUser = null;
+                }
+            }
+
+            const name = currentUser ? (currentUser.name || currentUser.first_name || "User") : "Client";
+            const email = currentUser ? (currentUser.email || "client@lex.local") : "guest@lex.local";
+            const initial = name.charAt(0).toUpperCase();
+
+            document.getElementById("topProfileName").textContent = name;
+            document.getElementById("profileAvatarSeal").textContent = initial;
+            document.getElementById("profileModalName").textContent = name;
+            document.getElementById("profileModalEmail").textContent = email;
+            document.getElementById("profileModalSeal").textContent = initial;
+        }
+
+        function startNewSession() {
+            const oldSession = activeSessionId;
+            activeSessionId = "LEX-SESS-" + Math.floor(Date.now() / 1000) + "-" + Math.floor(100 + Math.random() * 900);
+            activeConsultationId = null;
+            sessionStorage.setItem("lex_active_session", activeSessionId);
+
+            document.getElementById("sessionBadgeText").textContent = `Session: ${activeSessionId}`;
+            document.getElementById("dockSessionId").textContent = activeSessionId;
+            document.getElementById("profileModalSessionId").textContent = activeSessionId;
+
+            // Reset Case Desk view
+            document.getElementById("intakeWelcome").style.display = "block";
+            document.getElementById("consultationStream").innerHTML = "";
+            activeConsultationData = null;
+
+            closeHistoryDrawer();
+
+            // Clear old session memory on backend
+            if (oldSession) {
+                fetch(`${API_BASE}/api/session/new`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        old_session_id: oldSession,
+                        session_id: activeSessionId,
+                        user_email: currentUser ? (currentUser.email || "guest@lex.local") : "guest@lex.local"
+                    })
+                }).catch(() => {});
+            }
+        }
+
+        function startNewSessionWithQuery(queryText) {
+            startNewSession();
+            setTimeout(() => {
+                submitLegalQuery(queryText);
+            }, 250);
+        }
+
+        function logoutCurrentUser() {
+            localStorage.removeItem("lex_user");
+            sessionStorage.removeItem("lex_active_session");
+            window.location.href = "index.html";
+        }
+
+        // 2. Input Setup
+        function setupInputListeners() {
+            const textarea = document.getElementById("legalQueryInput");
+
+            textarea.addEventListener("input", function () {
+                this.style.height = "auto";
+                this.style.height = Math.min(this.scrollHeight, 150) + "px";
+            });
+
+            textarea.addEventListener("keydown", function (e) {
+                if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendQuery();
+                }
+            });
+
+            // Mobile drawer toggle
+            const drawerToggleBtn = document.getElementById("drawerToggleBtn");
+            const caseDock = document.getElementById("caseDock");
+            const drawerBackdrop = document.getElementById("drawerBackdrop");
+
+            if (drawerToggleBtn && caseDock && drawerBackdrop) {
+                drawerToggleBtn.addEventListener("click", () => {
+                    caseDock.classList.toggle("open");
+                    drawerBackdrop.classList.toggle("show");
+                });
+            }
+        }
+
+        function handleSendQuery() {
+            const textarea = document.getElementById("legalQueryInput");
+            const text = textarea.value.trim();
+            if (!text) return;
+            textarea.value = "";
+            textarea.style.height = "auto";
+            submitLegalQuery(text);
+        }
+
+        function submitPredefined(question) {
+            submitLegalQuery(question);
+        }
+
+        function focusActiveChat() {
+            closeHistoryModal();
+            closeDocumentModal();
+            closeProfileModal();
+            closeTopicsModal();
+            closeHistoryDrawer();
+            const textarea = document.getElementById("legalQueryInput");
+            if (textarea) textarea.focus();
+        }
+
+        // 3. Submit Legal Query to Backend
+        async function submitLegalQuery(queryText) {
+            const intakeWelcome = document.getElementById("intakeWelcome");
+            const consultationStream = document.getElementById("consultationStream");
+            const analysisIndicator = document.getElementById("analysisIndicator");
+
+            if (intakeWelcome) intakeWelcome.style.display = "none";
+
+            // Render Client Question Entry
+            const clientName = currentUser ? (currentUser.name || currentUser.first_name || "Client") : "Client";
+            const clientInitial = clientName.charAt(0).toUpperCase();
+
+            const queryHtml = `
+                <div class="counsel-entry client-entry">
+                    <div class="entry-seal client-seal">${escapeHtml(clientInitial)}</div>
+                    <div class="entry-content">
+                        <div class="entry-header">
+                            <span class="entry-author">${escapeHtml(clientName)}</span>
+                            <span class="entry-time">${getCurrentTime()}</span>
+                        </div>
+                        <div class="client-text-card">
+                            <p>${escapeHtml(queryText)}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            consultationStream.insertAdjacentHTML("beforeend", queryHtml);
+            scrollToBottom();
+
+            // Show Analysis Indicator
+            analysisIndicator.style.display = "flex";
+            scrollToBottom();
+
+            try {
+                const userEmail = currentUser ? (currentUser.email || "guest@lex.local") : "guest@lex.local";
+                const response = await fetch(`${API_BASE}/api/chat`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message: queryText,
+                        user_email: userEmail,
+                        session_id: activeSessionId,
+                        consultation_id: activeConsultationId || null
+                    })
+                });
+
+                const data = await response.json();
+                analysisIndicator.style.display = "none";
+
+                if (response.ok && data.success) {
+                    activeConsultationData = data;
+                    activeConsultationData.user_query = queryText;
+
+                    // Keep the backend consultation ID so follow-up answers
+                    // remain attached to the same legal consultation.
+                    if (data.consultation_id) {
+                        activeConsultationId = data.consultation_id;
+                    }
+
+                    renderCounselAdvisory(data, queryText);
+                    saveToHistoryList(queryText, data);
+                } else {
+                    renderErrorAdvisory(data.error || "Unable to complete legal consultation analysis.");
+                }
+            } catch (err) {
+                analysisIndicator.style.display = "none";
+                console.error("Chat error:", err);
+                renderErrorAdvisory("Unable to connect to Lex backend server. Please verify Flask backend is active on port 5000.");
+            }
+
+            scrollToBottom();
+        }
+
+        // 4. Render Legal Advisory Card (Clean, Simple, Indian Law)
+        function renderCounselAdvisory(data, userQuery) {
+            const consultationStream = document.getElementById("consultationStream");
+
+            const title = data.title || "Legal Situation Assessment";
+            const assessment = data.situation_assessment || "";
+            const explanation = data.explanation || "";
+            // The backend returns actions/options as database records
+            // (objects), while older responses may contain plain strings.
+            // Normalize both forms before rendering so JavaScript never
+            // displays "[object Object]".
+            const actions = Array.isArray(data.actions)
+                ? data.actions
+                    .map(item => typeof item === "string"
+                        ? item
+                        : (item.action_text || item.action || item.text || ""))
+                    .filter(Boolean)
+                : [];
+
+            const preventions = Array.isArray(data.preventions)
+                ? data.preventions
+                    .map(item => typeof item === "string"
+                        ? item
+                        : (item.text || item.description || ""))
+                    .filter(Boolean)
+                : [];
+
+            const documents = Array.isArray(data.documents)
+                ? data.documents.map(item => {
+                    if (typeof item === "string" || typeof item === "number") return { name: String(item) };
+                    if (!item || typeof item !== "object") return null;
+                    return {
+                        name: item.name || item.document_name || item.title || item.text || "",
+                        level: item.level || item.requirement_level || "Essential",
+                        description: item.description || item.purpose || ""
+                    };
+                }).filter(item => item && item.name)
+                : [];
+
+            const options = Array.isArray(data.options)
+                ? data.options
+                    .map(item => typeof item === "string"
+                        ? item
+                        : (item.option_text || item.option || item.text || ""))
+                    .filter(Boolean)
+                : [];
+
+            const categoryOptions = Array.isArray(data.category_options)
+                ? data.category_options
+                : [];
+            const status = data.status || "";
+            const isAnswered = status === "answered" && data.found === true;
+            const isNonAnswer = [
+                "needs_clarification",
+                "ambiguous",
+                "unsupported",
+                "out_of_scope",
+                "knowledge_unavailable"
+            ].includes(status);
+
+            // A formal case reference is meaningful only after Lex has
+            // actually reached an answered, source-backed conclusion.
+            const caseRef = data.case_ref || (isAnswered
+                ? "LEX-CASE-" + Math.floor(1000 + Math.random() * 9000)
+                : "");
+            const disclaimer = data.disclaimer || "Lex provides automated legal information based on Indian statutory frameworks for guidance.";
+
+            // Check for Consultation Scoping Alert (Separate Case Detected)
+            if (status === "new_consultation_required") {
+                const targetQuery = (data.pending_new_query || userQuery || "").replace(/'/g, "\\'");
+                const scopingHtml = `
+                    <div class="counsel-entry lex-entry">
+                        <div class="entry-seal lex-seal">⚖</div>
+                        <div class="entry-content">
+                            <div class="entry-header">
+                                <span class="entry-author">Lex Legal Counsel</span>
+                                <span class="counsel-badge">Consultation Scoping</span>
+                                <span class="entry-time">${getCurrentTime()}</span>
+                            </div>
+                            <div class="scoping-alert-card">
+                                <div class="scoping-header">
+                                    <span class="scoping-icon">📌</span>
+                                    <div>
+                                        <h4>Separate Legal Matter Detected</h4>
+                                        <span class="scoping-sub">Active Matter: <strong>${escapeHtml(data.active_case_title || "Current Case")}</strong></span>
+                                    </div>
+                                </div>
+                                <p class="scoping-text">${escapeHtml(assessment)}</p>
+                                <div class="scoping-actions">
+                                    <button class="scoping-new-btn" onclick="startNewSessionWithQuery('${escapeHtml(targetQuery)}')">
+                                        + Open New Consultation for this Matter →
+                                    </button>
+                                    <button class="scoping-stay-btn" onclick="focusActiveChat()">
+                                        Continue Active Consultation
+                                    </button>
+                                </div>
+                                <div class="scoping-footer-note">
+                                    🔒 <em>Each consultation retains its own clean case brief, evidence checklist, and statutory record.</em>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                consultationStream.insertAdjacentHTML("beforeend", scopingHtml);
+                return;
+            }
+
+            // If Topic / Category Selection
+            if (data.is_topic_selection && categoryOptions.length > 0) {
+                const topicHtml = `
+                    <div class="counsel-entry lex-entry">
+                        <div class="entry-seal lex-seal">⚖</div>
+                        <div class="entry-content">
+                            <div class="entry-header">
+                                <span class="entry-author">Lex Legal Counsel</span>
+                                <span class="entry-time">${getCurrentTime()}</span>
+                            </div>
+
+                            <div class="advisory-card">
+                                <div class="advisory-card-header">
+                                    <div class="advisory-title-block">
+                                        <h3>${escapeHtml(title)}</h3>
+                                        ${caseRef ? `
+                                            <span class="advisory-ref">Topic Reference: ${escapeHtml(caseRef)}</span>
+                                        ` : ''}
+                                    </div>
+                                </div>
+
+                                <div class="advisory-block">
+                                    <p class="advisory-simple-text">${escapeHtml(assessment)}</p>
+                                </div>
+
+                                <div class="advisory-block">
+                                    <div class="advisory-block-title">Select your specific scenario:</div>
+                                    <div class="topic-options-grid">
+                                        ${categoryOptions.map(opt => `
+                                            <button class="topic-option-item" onclick="submitPredefined('${escapeHtml(opt.title.replace(/'/g, "\\'"))}')">
+                                                <strong>${escapeHtml(opt.title)}</strong>
+                                                <small>${escapeHtml(opt.situation)}</small>
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                consultationStream.insertAdjacentHTML("beforeend", topicHtml);
+                return;
+            }
+
+            // Build Remembered Details Banner
+            let rememberedHtml = "";
+            const rem = data.remembered_details || {};
+            const factsList = [];
+            if (rem.primary_party && rem.primary_party.name) {
+                const p = rem.primary_party;
+                const pron = (p.pronouns && p.pronouns.length > 0) ? ` (${p.pronouns.join('/')})` : '';
+                factsList.push(`<strong>Involved Party:</strong> ${escapeHtml(p.name)}${pron} [${escapeHtml(p.role || 'Party')}]`);
+            }
+            if (rem.amounts && rem.amounts.length > 0) {
+                factsList.push(`<strong>Amount:</strong> ${escapeHtml(rem.amounts.join(', '))}`);
+            }
+            if (rem.timeframes && rem.timeframes.length > 0) {
+                factsList.push(`<strong>Duration:</strong> ${escapeHtml(rem.timeframes.join(', '))}`);
+            }
+            if (rem.locations && rem.locations.length > 0) {
+                factsList.push(`<strong>Location:</strong> ${escapeHtml(rem.locations.join(', '))}`);
+            }
+            if (factsList.length > 0) {
+                rememberedHtml = `
+                    <div class="remembered-details-pill">
+                        <span class="rem-icon">🧠</span>
+                        <div class="rem-content">${factsList.join(' &bull; ')}</div>
+                    </div>
+                `;
+            }
+
+            // Handle Needs Clarification (Conversational Counsel Chat Bubble)
+            if (status === "needs_clarification" && Array.isArray(data.clarifying_questions) && data.clarifying_questions.length > 0) {
+                const clarifyChatHtml = `
+                    <div class="counsel-entry lex-entry">
+                        <div class="entry-seal lex-seal">⚖</div>
+                        <div class="entry-content">
+                            <div class="entry-header">
+                                <span class="entry-author">Lex Legal Counsel</span>
+                                <span class="counsel-badge">Fact Intake</span>
+                                <span class="entry-time">${getCurrentTime()}</span>
+                            </div>
+                            <div class="clarification-chat-bubble">
+                                ${rememberedHtml}
+                                <p class="clarification-bubble-intro">
+                                    ${escapeHtml(assessment || "To evaluate your legal standing and identify the exact statutory violation under Indian Law, Lex needs a few specific facts:")}
+                                </p>
+                                <div class="clarification-questions-list">
+                                    ${data.clarifying_questions.map((q, idx) => `
+                                        <div class="clarification-q-card">
+                                            <span class="q-num">${idx + 1}</span>
+                                            <div class="q-text">${escapeHtml(q)}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="clarification-footer-hint">
+                                    💡 <em>Reply in simple words below. Lex remembers party names, pronouns, and specific details across our conversation.</em>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                consultationStream.insertAdjacentHTML("beforeend", clarifyChatHtml);
+                return;
+            }
+
+            // Build Name of Legal Violation Banner
+            let violationHtml = "";
+            if (data.violation_name) {
+                violationHtml = `
+                    <div class="advisory-block violation-block">
+                        <div class="advisory-block-title">Name of Legal Violation</div>
+                        <div class="violation-badge-card">
+                            <div class="violation-badge-header">
+                                <span class="violation-tag">⚖ Statutory Violation</span>
+                                ${data.violation_type ? `<span class="violation-type-pill">${escapeHtml(data.violation_type)}</span>` : ''}
+                            </div>
+                            <h4 class="violation-heading">${escapeHtml(data.violation_name)}</h4>
+                            ${data.violation_statute ? `
+                                <div class="violation-statute-row">
+                                    <strong>Governing Law:</strong> <span>${escapeHtml(data.violation_statute)}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Build Actions Section
+            let actionsHtml = "";
+            if (actions.length > 0) {
+                actionsHtml = `
+                    <div class="advisory-block">
+                        <div class="advisory-block-title">Step-by-Step Action Roadmap</div>
+                        <div class="advisory-actions-list">
+                            ${actions.map((act, idx) => `
+                                <div class="action-step-card">
+                                    <span class="action-num">${idx + 1}</span>
+                                    <div class="action-text">${escapeHtml(act)}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Build Preventions & Precautions Section
+            let preventionsHtml = "";
+            if (preventions.length > 0) {
+                preventionsHtml = `
+                    <div class="advisory-block preventions-block">
+                        <div class="advisory-block-title">Essential Preventions & Safeguards (Do's & Don'ts)</div>
+                        <ul class="preventions-list">
+                            ${preventions.map(prev => `
+                                <li>${escapeHtml(prev)}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            // Build Documents Checklist Section
+            let documentsHtml = "";
+            if (documents.length > 0) {
+                documentsHtml = `
+                    <div class="advisory-block">
+                        <div class="advisory-block-title">Required Documents & Evidence Checklist</div>
+                        <div class="documents-checklist-grid">
+                            ${documents.map(doc => `
+                                <div class="doc-item-card">
+                                    <div class="doc-item-header">
+                                        <strong>${escapeHtml(doc.name)}</strong>
+                                        <span class="doc-badge ${doc.level === 'Essential' ? 'doc-essential' : 'doc-supporting'}">${escapeHtml(doc.level || "Essential")}</span>
+                                    </div>
+                                    ${doc.description ? `<p class="doc-item-desc">${escapeHtml(doc.description)}</p>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Build Legal Remedies Section
+            let remediesHtml = "";
+            if (options.length > 0) {
+                remediesHtml = `
+                    <div class="advisory-block">
+                        <div class="advisory-block-title">Available Legal Remedies & Next Steps</div>
+                        <ul class="remedies-list">
+                            ${options.map(opt => `<li>${escapeHtml(opt)}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            const advisoryCardHtml = `
+                <div class="counsel-entry lex-entry">
+                    <div class="entry-seal lex-seal">⚖</div>
+                    <div class="entry-content">
+
+                        <div class="entry-header">
+                            <span class="entry-author">Lex Legal Counsel</span>
+                            <span class="counsel-badge">Advisory Assessment</span>
+                            <span class="entry-time">${getCurrentTime()}</span>
+                        </div>
+
+                        <!-- Bespoke Executive Legal Advisory Card -->
+                        <div class="advisory-card">
+
+                            <!-- Header -->
+                            <div class="advisory-card-header">
+                                <div class="advisory-title-block">
+                                    <h3>${escapeHtml(title)}</h3>
+                                    ${isAnswered && caseRef ? `
+                                        <span class="advisory-ref">Case Reference: ${escapeHtml(caseRef)}</span>
+                                    ` : ''}
+                                </div>
+                            </div>
+
+                            <!-- Remembered Details Pill -->
+                            ${rememberedHtml}
+
+                            <!-- Name of Legal Violation -->
+                            ${violationHtml}
+
+                            <!-- Plain-English Situation Assessment -->
+                            ${assessment ? `
+                                <div class="advisory-block">
+                                    <div class="advisory-block-title">Situation Assessment</div>
+                                    <p class="advisory-simple-text">${escapeHtml(assessment)}</p>
+                                </div>
+                            ` : ''}
+
+                            <!-- Statutory Framework under Indian Law -->
+                            ${explanation ? `
+                                <div class="advisory-block">
+                                    <div class="advisory-block-title">Applicable Statutory Provisions under Indian Law</div>
+                                    <p class="advisory-simple-text">${escapeHtml(explanation)}</p>
+                                </div>
+                            ` : ''}
+
+                            <!-- Actions -->
+                            ${actionsHtml}
+
+                            <!-- Preventions -->
+                            ${preventionsHtml}
+
+                            <!-- Documents -->
+                            ${documentsHtml}
+
+                            <!-- Legal Remedies -->
+                            ${remediesHtml}
+
+                            <!-- Consultation Scoping Callout Banner -->
+                            <div class="advisory-scoping-banner">
+                                <span class="scope-icon">📌</span>
+                                <div class="scope-text">
+                                    <strong>Consultation Scoped to This Case:</strong>
+                                    This chat is dedicated specifically to this legal matter. To consult on an unrelated case or different dispute, please click
+                                    <button class="inline-new-btn" onclick="startNewSession()">+ New Consultation</button>.
+                                </div>
+                            </div>
+
+                            <!-- Disclaimer Note -->
+                            <div class="advisory-disclaimer">
+                                <strong>Legal Note:</strong> ${escapeHtml(disclaimer)}
+                            </div>
+
+                            <!-- Action Toolbar -->
+                            <div class="advisory-toolbar">
+                                ${isAnswered ? `
+                                    <button class="tool-btn primary-tool-btn" onclick="openCaseDocumentModal()" title="View and Download Full Formal Case Brief Document">
+                                        <span>📄</span> View & Download Case Document
+                                    </button>
+                                ` : ''}
+                                <button class="tool-btn" onclick="copyCardAdvisory(this)" title="Copy Consultation Advice">
+                                    <span>📋</span> Copy Advisory
+                                </button>
+                                <button class="tool-btn new-consult-tool-btn" onclick="startNewSession()" title="Start a fresh consultation for a different case">
+                                    <span>↻</span> Consult on Another Case
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            `;
+
+            consultationStream.insertAdjacentHTML("beforeend", advisoryCardHtml);
+        }
+
+        function renderErrorAdvisory(errorMessage) {
+            const consultationStream = document.getElementById("consultationStream");
+            const errorHtml = `
+                <div class="counsel-entry lex-entry">
+                    <div class="entry-seal lex-seal">⚖</div>
+                    <div class="entry-content">
+                        <div class="advisory-error-card">
+                            <h4>⚠️ Consultation Notice</h4>
+                            <p>${escapeHtml(errorMessage)}</p>
+                            <button class="retry-btn" onclick="focusActiveChat()">Try Another Legal Question</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            consultationStream.insertAdjacentHTML("beforeend", errorHtml);
+        }
+
+        // 5. History Management & Dedicated History Viewer Window
+        function getConsultationHistoryTitle(query, data) {
+            const caseTitle = data && data.case && data.case.case_title;
+            const compositeTitle = data && data.multiple_issues_detected && data.title;
+            const candidateTitle = compositeTitle || (data && data.title) || caseTitle;
+            const genericTitles = new Set([
+                "more information needed", "please clarify the legal issue",
+                "please describe your legal issue", "how can lex help?",
+                "legal situation assessment", "unable to confirm a specific legal case"
+            ]);
+            if (candidateTitle && !genericTitles.has(String(candidateTitle).trim().toLowerCase())) {
+                return String(candidateTitle).trim();
+            }
+            const topic = data && data.topic;
+            if (topic && String(topic).trim()) return `${String(topic).trim()} consultation`;
+            const cleanQuery = String(query || "").replace(/\\s+/g, " ").trim();
+            return cleanQuery.length > 64 ? cleanQuery.slice(0, 61) + "..." : (cleanQuery || "Legal consultation");
+        }
+
+        function saveToHistoryList(query, consultationData) {
+            const sessionId = consultationData && consultationData.session_id ? consultationData.session_id : activeSessionId;
+            const consultationId = consultationData && consultationData.consultation_id ? consultationData.consultation_id : activeConsultationId;
+            const existingIndex = historyRecords.findIndex(item =>
+                consultationId && item.consultation_id === consultationId && item.session_id === sessionId
+            );
+            const existing = existingIndex >= 0 ? historyRecords[existingIndex] : null;
+            const record = {
+                id: existing ? existing.id : Date.now(),
+                // Keep the first user statement as the stable history summary;
+                // later turns update the same consultation snapshot, not new cards.
+                query: existing ? existing.query : query,
+                session_id: sessionId,
+                consultation_id: consultationId,
+                title: getConsultationHistoryTitle(query, consultationData || {}) || (existing && existing.title) || "Legal consultation",
+                time: getCurrentTime(),
+                case_data: consultationData,
+                messages: (existing && Array.isArray(existing.messages) ? existing.messages : []).concat([query])
+            };
+            if (existingIndex >= 0) historyRecords.splice(existingIndex, 1);
+            historyRecords.unshift(record);
+            if (historyRecords.length > 25) historyRecords.pop();
+
+            localStorage.setItem("lex_consultation_history", JSON.stringify(historyRecords));
+            renderHistoryDock();
+            updateHistoryCount();
+        }
+
+        function loadHistoryFromStorage() {
+            const saved = localStorage.getItem("lex_consultation_history");
+            if (saved) {
+                try {
+                    historyRecords = JSON.parse(saved);
+                } catch (e) {
+                    historyRecords = [];
+                }
+            }
+            renderHistoryDock();
+            updateHistoryCount();
+        }
+
+        function renderHistoryDock() {
+            const container = document.getElementById("historyListContainer");
+            if (!container) return;
+
+            if (historyRecords.length === 0) {
+                container.innerHTML = `
+                    <div class="history-empty">
+                        <span>💬</span>
+                        <p>No past consultations yet. Your history will appear here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = historyRecords.map((item, idx) => `
+                <div class="history-card" onclick="openHistoryDetailModal(${idx})">
+                    <div class="history-card-header">
+                        <span class="history-card-title">${escapeHtml(item.title || getConsultationHistoryTitle(item.query, item.case_data || {}))}</span>
+                    </div>
+                    <p class="history-card-query">${escapeHtml(item.query)}</p>
+                    <span class="history-card-time">${escapeHtml(item.time || 'Recent')}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateHistoryCount() {
+            const countElem = document.getElementById("profileModalHistoryCount");
+            if (countElem) {
+                countElem.textContent = `${historyRecords.length} Consultation${historyRecords.length === 1 ? '' : 's'}`;
+            }
+        }
+
+        function clearAllHistory() {
+            if (confirm("Are you sure you want to clear your consultation history?")) {
+                historyRecords = [];
+                localStorage.removeItem("lex_consultation_history");
+                renderHistoryDock();
+                updateHistoryCount();
+            }
+        }
+
+        // Open Dedicated History Viewer Window (DOES NOT TOUCH ACTIVE CHAT)
+        function openHistoryDetailModal(index) {
+            const item = historyRecords[index];
+            if (!item) return;
+
+            selectedHistoryItem = item;
+            const data = item.case_data || {};
+            const title = item.title || getConsultationHistoryTitle(item.query, data) || "Past Consultation";
+            const assessment = data.situation_assessment || "No detailed assessment stored.";
+            const explanation = data.explanation || "";
+            // Normalize database records and legacy string arrays before
+            // building the printable document. Without this, JavaScript
+            // converts objects to the literal text "[object Object]".
+            const toText = (item, keys) => {
+                if (typeof item === "string" || typeof item === "number") return String(item);
+                if (!item || typeof item !== "object") return "";
+                for (const key of keys) {
+                    if (item[key] !== undefined && item[key] !== null && String(item[key]).trim()) return String(item[key]);
+                }
+                return "";
+            };
+            const actions = (data.actions || []).map(item => toText(item, ["action_text", "action", "text", "description"])).filter(Boolean);
+            const preventions = (data.preventions || []).map(item => toText(item, ["text", "description", "prevention"])).filter(Boolean);
+            const documents = (Array.isArray(data.documents) ? data.documents : []).map(item => {
+                if (typeof item === "string" || typeof item === "number") return { name: String(item) };
+                if (!item || typeof item !== "object") return null;
+                return {
+                    name: item.name || item.document_name || item.title || item.text || "",
+                    level: item.level || item.requirement_level || "Essential",
+                    description: item.description || item.purpose || ""
+                };
+            }).filter(item => item && item.name);
+            const options = (data.options || []).map(item => toText(item, ["option_text", "option", "text", "description"])).filter(Boolean);
+            const caseRef = data.case_ref || `LEX-HIST-${item.id}`;
+
+            document.getElementById("historyModalTitle").textContent = title;
+
+            let actionsListHtml = "";
+            if (actions.length > 0) {
+                actionsListHtml = `
+                    <div class="modal-section">
+                        <h4>Step-by-Step Action Roadmap</h4>
+                        <ol class="modal-numbered-list">
+                            ${actions.map(act => `<li>${escapeHtml(act)}</li>`).join('')}
+                        </ol>
+                    </div>
+                `;
+            }
+
+            let preventionsListHtml = "";
+            if (preventions.length > 0) {
+                preventionsListHtml = `
+                    <div class="modal-section modal-preventions-section">
+                        <h4>Essential Preventions & Safeguards</h4>
+                        <ul class="modal-bullet-list">
+                            ${preventions.map(prev => `<li>${escapeHtml(prev)}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            let documentsListHtml = "";
+            if (documents.length > 0) {
+                documentsListHtml = `
+                    <div class="modal-section">
+                        <h4>Required Documents Checklist</h4>
+                        <ul class="modal-bullet-list">
+                            ${documents.map(doc => `
+                                <li>
+                                    <strong>${escapeHtml(doc.name || doc)}</strong>
+                                    ${doc.level ? ` <span class="doc-badge">${escapeHtml(doc.level)}</span>` : ''}
+                                    ${doc.description ? ` — <span>${escapeHtml(doc.description)}</span>` : ''}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            let remediesListHtml = "";
+            if (options.length > 0) {
+                remediesListHtml = `
+                    <div class="modal-section">
+                        <h4>Legal Remedies & Next Steps</h4>
+                        <ul class="modal-bullet-list">
+                            ${options.map(opt => `<li>${escapeHtml(opt)}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            const bodyHtml = `
+                <div class="history-detail-view">
+                    <div class="history-meta-bar">
+                        <span><strong>Case Reference:</strong> ${escapeHtml(caseRef)}</span>
+                        <span><strong>Recorded:</strong> ${escapeHtml(item.time || 'Past')}</span>
+                        <span><strong>Jurisdiction:</strong> India</span>
+                    </div>
+
+                    <div class="modal-section user-query-highlight">
+                        <h4>Original Client Query</h4>
+                        <p>${escapeHtml(item.query)}</p>
+                    </div>
+
+                    ${data.violation_name ? `
+                        <div class="modal-section">
+                            <h4>Identified Legal Violation</h4>
+                            <div class="violation-badge-card">
+                                <div class="violation-badge-header">
+                                    <span class="violation-tag">⚖ Statutory Violation</span>
+                                    ${data.violation_type ? `<span class="violation-type-pill">${escapeHtml(data.violation_type)}</span>` : ''}
+                                </div>
+                                <h4 class="violation-heading">${escapeHtml(data.violation_name)}</h4>
+                                ${data.violation_statute ? `
+                                    <div class="violation-statute-row">
+                                        <strong>Governing Law:</strong> <span>${escapeHtml(data.violation_statute)}</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <div class="modal-section">
+                        <h4>Situation Assessment</h4>
+                        <p class="modal-text">${escapeHtml(assessment)}</p>
+                    </div>
+
+                    ${explanation ? `
+                        <div class="modal-section">
+                            <h4>Statutory Provisions under Indian Law</h4>
+                            <p class="modal-text">${escapeHtml(explanation)}</p>
+                        </div>
+                    ` : ''}
+
+                    ${actionsListHtml}
+                    ${preventionsListHtml}
+                    ${documentsListHtml}
+                    ${remediesListHtml}
+
+                    <div class="modal-disclaimer">
+                        <strong>Note:</strong> This is a historical legal advisory snapshot. Your ongoing active chat desk is fully preserved in the background.
+                    </div>
+                </div>
+            `;
+
+            document.getElementById("historyModalBody").innerHTML = bodyHtml;
+            document.getElementById("historyModalOverlay").classList.add("show");
+        }
+
+        function closeHistoryModal() {
+            document.getElementById("historyModalOverlay").classList.remove("show");
+            selectedHistoryItem = null;
+        }
+
+        function generateDocumentFromHistory() {
+            if (selectedHistoryItem && selectedHistoryItem.case_data) {
+                renderCaseDocument(selectedHistoryItem.case_data, selectedHistoryItem.query);
+                closeHistoryModal();
+                document.getElementById("documentModalOverlay").classList.add("show");
+            }
+        }
+
+        // 6. Case Document Generator (Complete Case Details, Preventions, Steps)
+        function openCaseDocumentModal() {
+            if (!activeConsultationData) {
+                alert("Please submit a legal situation first to generate a full case document.");
+                return;
+            }
+            renderCaseDocument(activeConsultationData, activeConsultationData.user_query);
+            document.getElementById("documentModalOverlay").classList.add("show");
+        }
+
+        function closeDocumentModal() {
+            document.getElementById("documentModalOverlay").classList.remove("show");
+        }
+
+        function renderCaseDocument(data, queryText) {
+            const container = document.getElementById("documentModalBody");
+            const title = data.title || "Legal Consultation Brief";
+            const assessment = data.situation_assessment || "";
+            const explanation = data.explanation || "";
+            const listText = (item, keys) => {
+                if (typeof item === "string" || typeof item === "number") return String(item);
+                if (!item || typeof item !== "object") return "";
+                for (const key of keys) if (item[key] != null && String(item[key]).trim()) return String(item[key]);
+                return "";
+            };
+            const actions = (data.actions || []).map(item => listText(item, ["action_text", "action", "text", "description"])).filter(Boolean);
+            const preventions = (data.preventions || []).map(item => listText(item, ["text", "description", "prevention"])).filter(Boolean);
+            const documents = (Array.isArray(data.documents) ? data.documents : []).map(item => {
+                if (typeof item === "string" || typeof item === "number") return { name: String(item) };
+                if (!item || typeof item !== "object") return null;
+                return {
+                    name: item.name || item.document_name || item.title || item.text || "",
+                    level: item.level || item.requirement_level || "Essential",
+                    description: item.description || item.purpose || ""
+                };
+            }).filter(item => item && item.name);
+            const options = (data.options || []).map(item => listText(item, ["option_text", "option", "text", "description"])).filter(Boolean);
+            const caseRef = data.case_ref || "LEX-DOC-" + Math.floor(1000 + Math.random() * 9000);
+            const clientName = currentUser ? (currentUser.name || currentUser.first_name || "Client") : "Client";
+            const clientEmail = currentUser ? (currentUser.email || "client@lex.local") : "guest@lex.local";
+            const dateStr = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            const docHtml = `
+                <div class="formal-case-document" id="printableCaseDocument">
+
+                    <!-- Document Letterhead -->
+                    <div class="doc-letterhead">
+                        <div class="doc-letterhead-left">
+                            <div class="doc-seal">LEX LEGAL INTELLIGENCE</div>
+                            <div class="doc-sub">AUTOMATED STATUTORY CASE BRIEF & ADVISORY MEMORANDUM</div>
+                            <div class="doc-jurisdiction">REPUBLIC OF INDIA &bull; INDIAN LEGAL JURISDICTION</div>
+                        </div>
+                        <div class="doc-letterhead-right">
+                            <div class="doc-meta-item"><strong>Case Ref:</strong> ${escapeHtml(caseRef)}</div>
+                            <div class="doc-meta-item"><strong>Session:</strong> ${escapeHtml(activeSessionId)}</div>
+                            <div class="doc-meta-item"><strong>Date:</strong> ${escapeHtml(dateStr)}</div>
+                        </div>
+                    </div>
+
+                    <div class="doc-divider"></div>
+
+                    <!-- Client Particulars -->
+                    <div class="doc-particulars-grid">
+                        <div><strong>Client Name:</strong> ${escapeHtml(clientName)}</div>
+                        <div><strong>Email / ID:</strong> ${escapeHtml(clientEmail)}</div>
+                        <div><strong>Legal Domain:</strong> ${escapeHtml(data.topic || "General Indian Law")}</div>
+                        <div><strong>Advisory Status:</strong> Initial Statutory Assessment</div>
+                    </div>
+
+                    <!-- 1. Subject Matter / Query -->
+                    <div class="doc-section">
+                        <div class="doc-section-heading">1. MATTER SUMMARY & FACTUAL BACKGROUND</div>
+                        <p class="doc-body-text"><strong>Client Statement:</strong> "${escapeHtml(queryText || title)}"</p>
+                    </div>
+
+                    <!-- 2. Identified Legal Violation -->
+                    <div class="doc-section">
+                        <div class="doc-section-heading">2. IDENTIFIED STATUTORY VIOLATION & GOVERNING LAW</div>
+                        <p class="doc-body-text"><strong>Violation:</strong> ${escapeHtml(data.violation_name || title)}</p>
+                        ${data.violation_statute ? `<p class="doc-body-text"><strong>Governing Statutes:</strong> ${escapeHtml(data.violation_statute)}</p>` : ''}
+                        ${data.violation_type ? `<p class="doc-body-text"><strong>Statutory Classification:</strong> ${escapeHtml(data.violation_type)}</p>` : ''}
+                    </div>
+
+                    <!-- 3. Legal Assessment -->
+                    <div class="doc-section">
+                        <div class="doc-section-heading">3. SITUATION ASSESSMENT & STATUTORY MERITS</div>
+                        <p class="doc-body-text">${escapeHtml(assessment)}</p>
+                    </div>
+
+                    <!-- 4. Applicable Indian Laws -->
+                    <div class="doc-section">
+                        <div class="doc-section-heading">4. APPLICABLE STATUTORY PROVISIONS UNDER INDIAN LAW</div>
+                        <p class="doc-body-text">${escapeHtml(explanation)}</p>
+                    </div>
+
+                    <!-- 5. Action Steps -->
+                    <div class="doc-section">
+                        <div class="doc-section-heading">5. STEP-BY-STEP ACTION ROADMAP</div>
+                        <ol class="doc-numbered-list">
+                            ${actions.map(act => `<li>${escapeHtml(act)}</li>`).join('')}
+                        </ol>
+                    </div>
+
+                    <!-- 6. Preventions and Precautions -->
+                    <div class="doc-section doc-preventions-box">
+                        <div class="doc-section-heading">6. ESSENTIAL PREVENTIONS, PRECAUTIONS & SAFEGUARDS</div>
+                        <ul class="doc-bullet-list">
+                            ${preventions.map(prev => `<li><strong>Precaution:</strong> ${escapeHtml(prev)}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <!-- 7. Required Documents Checklist -->
+                    <div class="doc-section">
+                        <div class="doc-section-heading">7. MANDATORY & SUPPORTING DOCUMENTS CHECKLIST</div>
+                        <table class="doc-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Document / Evidence</th>
+                                    <th>Requirement Level</th>
+                                    <th>Purpose / Significance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${documents.map((doc, idx) => `
+                                    <tr>
+                                        <td>${idx + 1}</td>
+                                        <td><strong>${escapeHtml(doc.name || doc)}</strong></td>
+                                        <td><span class="doc-badge ${doc.level === 'Essential' ? 'doc-essential' : 'doc-supporting'}">${escapeHtml(doc.level || "Essential")}</span></td>
+                                        <td>${escapeHtml(doc.description || "Substantiates facts and claimant position in formal proceedings")}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 8. Legal Remedies -->
+                    <div class="doc-section">
+                        <div class="doc-section-heading">8. AVAILABLE LEGAL REMEDIES & COMPETENT FORUMS</div>
+                        <ul class="doc-bullet-list">
+                            ${options.map(opt => `<li>${escapeHtml(opt)}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <!-- 9. Legal Disclaimer -->
+                    <div class="doc-footer-disclaimer">
+                        <strong>LEGAL DISCLAIMER:</strong> This document represents an automated statutory guidance memorandum based on stored Indian legal frameworks. It is generated for educational and informational preparation purposes and does not establish a formal advocate-client relationship. For court representation or formal pleadings, please engage a practicing Advocate.
+                    </div>
+
+                </div>
+            `;
+
+            container.innerHTML = docHtml;
+        }
+
+        function printCaseDocument() {
+            window.print();
+        }
+
+        async function copyDocumentText() {
+            const doc = document.getElementById("printableCaseDocument");
+            if (!doc) {
+                alert("The case document is not available to copy.");
+                return;
+            }
+            const text = doc.innerText || doc.textContent || "";
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    const temp = document.createElement("textarea");
+                    temp.value = text;
+                    temp.setAttribute("readonly", "");
+                    temp.style.position = "fixed";
+                    temp.style.opacity = "0";
+                    document.body.appendChild(temp);
+                    temp.select();
+                    const copied = document.execCommand("copy");
+                    temp.remove();
+                    if (!copied) throw new Error("Clipboard permission unavailable");
+                }
+                alert("Case document text copied to clipboard!");
+            } catch (error) {
+                console.error("Copy document failed:", error);
+                alert("Unable to copy automatically. Please select the document text and copy it manually.");
+            }
+        }
+
+        function copyCardAdvisory(btn) {
+            const card = btn.closest(".advisory-card");
+            if (card) {
+                navigator.clipboard.writeText(card.innerText);
+                const orig = btn.innerHTML;
+                btn.innerHTML = "<span>✓</span> Copied!";
+                setTimeout(() => { btn.innerHTML = orig; }, 2000);
+            }
+        }
+
+        // 7. Modals Open/Close Handlers
+        function openProfileModal() {
+            document.getElementById("profileModalOverlay").classList.add("show");
+        }
+
+        function closeProfileModal() {
+            document.getElementById("profileModalOverlay").classList.remove("show");
+        }
+
+        function openTopicsModal() {
+            const modal = document.getElementById("topicsModalOverlay");
+            const grid = document.getElementById("topicsDirectoryGrid");
+            modal.classList.add("show");
+
+            const defaultTopics = [
+                { name: "Consumer Law", desc: "Defective products, seller refund refusals, warranty denial, e-commerce issues.", cases: 6 },
+                { name: "Employment Law", desc: "Unpaid salary, wrongful termination, workplace harassment (POSH), PF/Gratuity dues.", cases: 6 },
+                { name: "Rental and Tenancy", desc: "Security deposit refund, illegal eviction, repairs, rent disputes.", cases: 6 },
+                { name: "Cyber Law", desc: "Online fraud, UPI scam, social media hacked, online extortion/blackmail, data leaks.", cases: 12 },
+                { name: "Property Law", desc: "Title disputes, possession, builder delays (RERA), ancestral partition.", cases: 5 },
+                { name: "Family Law", desc: "Mutual consent divorce, child custody, maintenance, domestic violence protection.", cases: 5 },
+                { name: "Contract Law", desc: "Breach of contract, unpaid commercial invoices, NDA violations.", cases: 5 },
+                { name: "Traffic & Motor Accidents", desc: "Road accidents, MACT compensation, disputed e-challans, FIR guidance.", cases: 8 },
+                { name: "Banking & Cheque Bounce", desc: "Section 138 NI Act cheque bounce, loan recovery agent harassment.", cases: 4 },
+                { name: "Insurance", desc: "Rejected mediclaim, delayed health claims, motor accident disputes.", cases: 3 },
+                { name: "Intellectual Property", desc: "Copyright infringement, trademark counterfeiting, stolen online content.", cases: 3 },
+                { name: "Education", desc: "Fee refund refusal, degree withholding, anti-ragging harassment.", cases: 3 }
+            ];
+
+            grid.innerHTML = defaultTopics.map(t => `
+                <div class="topic-dir-card" onclick="selectTopicFromDirectory('${escapeHtml(t.name)}')">
+                    <div class="topic-dir-header">
+                        <h4>${escapeHtml(t.name)}</h4>
+                        <span class="topic-count-pill">${t.cases} Scenarios</span>
+                    </div>
+                    <p>${escapeHtml(t.desc)}</p>
+                    <span class="topic-consult-link">Consult Topic →</span>
+                </div>
+            `).join('');
+        }
+
+        function closeTopicsModal() {
+            document.getElementById("topicsModalOverlay").classList.remove("show");
+        }
+
+        function selectTopicFromDirectory(topicName) {
+            closeTopicsModal();
+            submitLegalQuery(`I need legal advice regarding ${topicName}`);
+        }
+
+        function openHistoryDrawer() {
+            const caseDock = document.getElementById("caseDock");
+            const drawerBackdrop = document.getElementById("drawerBackdrop");
+            if (caseDock) caseDock.classList.add("open");
+            if (drawerBackdrop) drawerBackdrop.classList.add("show");
+        }
+
+        function closeHistoryDrawer() {
+            const caseDock = document.getElementById("caseDock");
+            const drawerBackdrop = document.getElementById("drawerBackdrop");
+            if (caseDock) caseDock.classList.remove("open");
+            if (drawerBackdrop) drawerBackdrop.classList.remove("show");
+        }
+
+        // Helpers
+        function scrollToBottom() {
+            const deskContent = document.getElementById("deskContent");
+            if (deskContent) deskContent.scrollTop = deskContent.scrollHeight;
+        }
+
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function escapeHtml(str) {
+            return String(str || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+
+</body>
+</html>
